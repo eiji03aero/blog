@@ -1,0 +1,36 @@
+#!/bin/bash
+
+COMMAND=${1:-up}
+container_name="php"
+
+execute-docker-compose () {
+  docker-compose \
+    -f 'docker-compose.yml' \
+    $@
+}
+
+execute-docker-sync () {
+  docker-sync \
+    $@ \
+    -c 'docker-sync.yml'
+}
+
+stop-docker-compose () {
+  execute-docker-sync stop
+  execute-docker-compose stop
+}
+
+if [ $COMMAND = 'up' ] && [ $# -le 1 ]; then
+  execute-docker-sync start
+  execute-docker-compose up
+  stop-docker-compose
+
+elif [ $COMMAND = 'bash' ]; then
+  execute-docker-compose exec $container_name /bin/bash
+
+elif [ $COMMAND = 'bash-c' ]; then
+  execute-docker-compose exec client /bin/bash
+
+else
+  execute-docker-compose $@
+fi

@@ -1,0 +1,9 @@
+version: "2"
+
+options:
+  verbose: true
+
+syncs:
+  v-sync-client:
+    src: './client'
+    notify_terminal: true
